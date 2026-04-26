@@ -50,8 +50,9 @@ class LinearClassifier(object):
         # Run stochastic gradient descent to optimize W
         loss_history = []
         for it in range(num_iters):
-            X_batch = None
-            y_batch = None
+            mask = np.random.choice(batch_size, dim, replace=True)
+            X_batch = X[mask]
+            y_batch = y[mask]
 
             #########################################################################
             # TODO:                                                                 #
@@ -75,12 +76,15 @@ class LinearClassifier(object):
             # TODO:                                                                 #
             # Update the weights using the gradient and the learning rate.          #
             #########################################################################
+            self.W -= learning_rate*grad
 
 
             if verbose and it % 100 == 0:
                 print("iteration %d / %d: loss %f" % (it, num_iters, loss))
 
         return loss_history
+    def clear(self):
+        self.W = None
 
     def predict(self, X):
         """
@@ -101,6 +105,8 @@ class LinearClassifier(object):
         # TODO:                                                                   #
         # Implement this method. Store the predicted labels in y_pred.            #
         ###########################################################################
+        z = softmax(X,self.W)
+        y_pred += z.argmax(1)
 
         return y_pred
 

@@ -3,6 +3,20 @@ import numpy as np
 from random import shuffle
 from past.builtins import xrange
 
+def svm_loss_vectorized(W, X, y, reg):
+  """
+  fully-vectorized implementation :
+  - X holds all the training examples as columns (e.g. 3073 x 50,000 in CIFAR-10)
+  - y is array of integers specifying correct class (e.g. 50,000-D array)
+  - W are weights (e.g. 10 x 3073)
+  """
+  scores =  X.dot(W)
+  delta = np.ones_like(scores)
+  margins = np.maximum(0,scores - scores[y] + delta)
+  margins[y] = 0
+  loss = margins.sum() + reg*np.sum(W * W)
+  return loss
+
 
 def softmax_loss_naive(W, X, y, reg):
     """
@@ -63,10 +77,16 @@ def softmax_loss_naive(W, X, y, reg):
 
     return loss, dW
 
-def softmax(z):
-    e = np.exp(z)
-    nor = np.sum(e,axis=1,keepdims=True)
-    return e/nor
+
+
+def softmax(X,W):
+    z = X@W
+    z -= np.max(z,axis=1)[:,None]
+    #p = softmax(z)
+    p = np.exp(z)
+    p /= p.sum(axis=1,keepdims=True)
+    return p
+
 
 
 def softmax_loss_vectorized(W, X, y, reg):
