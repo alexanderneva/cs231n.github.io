@@ -83,8 +83,6 @@ class LinearClassifier(object):
                 print("iteration %d / %d: loss %f" % (it, num_iters, loss))
 
         return loss_history
-    def clear(self):
-        self.W = None
 
     def predict(self, X):
         """
